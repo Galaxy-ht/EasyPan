@@ -664,19 +664,29 @@ public class FileInfoServiceImpl extends BaseServiceImpl<FileInfoDao, FileInfo> 
             tsFolder.mkdirs();
         }
 
-        final String CMD_TRANSFER_2TS = "ffmpeg -y -i %s  -vcodec copy -acodec copy -vbsf h264_mp4toannexb %s";
-        final String CMD_CUT_TS = "ffmpeg -i %s -c copy -map 0 -f segment -segment_list %s -segment_time 30 %s/%s_%%4d.ts";
         String tsPath = tsFolder + "/" + Constants.TS_NAME;
+        String m3u8Path = tsFolder.getPath() + "/" + Constants.M3U8_NAME;
 
-        //生成.ts文件
-        String cmd = String.format(CMD_TRANSFER_2TS, filePath, tsPath);
-        ProcessUtils.executeCommand(cmd, false);
-        //生成索引文件.m3u8和切片.ts文件
-        cmd = String.format(CMD_CUT_TS, tsPath, tsFolder.getPath() + "/" + Constants.M3U8_NAME, tsFolder.getPath(), fileId);
-        ProcessUtils.executeCommand(cmd, false);
-        //删除index.ts
-        new File(tsPath).delete();
+        // 方式1: 直接切片（-c copy，速度快，要求视频编码为H.264）
+        final String CMD_CUT_TS_DIRECT = "ffmpeg -i %s -c copy -map 0 -f segment -segment_list %s -segment_time 30 %s/%s_%%4d.ts";
+        // 方式2: 转码切片（兼容所有编码，速度较慢）
+        final String CMD_CUT_TS_TRANSCODE = "ffmpeg -i %s -c:v libx264 -c:a aac -map 0 -f segment -segment_list %s -segment_time 30 %s/%s_%%4d.ts";
 
+        // 先尝试直接切片（快速）
+        String cmd = String.format(CMD_CUT_TS_DIRECT, filePath, m3u8Path, tsFolder.getPath(), fileId);
+        String result = ProcessUtils.executeCommand(cmd, false);
+
+        // 检查m3u8是否生成成功，如果失败则使用转码方式
+        File m3u8File = new File(m3u8Path);
+        if (!m3u8File.exists() || m3u8File.length() == 0) {
+            logger.info("直接切片失败，尝试转码切片，文件：{}", filePath);
+            cmd = String.format(CMD_CUT_TS_TRANSCODE, filePath, m3u8Path, tsFolder.getPath(), fileId);
+            ProcessUtils.executeCommand(cmd, false);
+        }
+        // 转码后再次检查，如果仍然失败则抛出异常
+        if (!m3u8File.exists() || m3u8File.length() == 0) {
+            throw new FastException("视频转码失败，m3u8文件未生成");
+        }
     }
 
     /**

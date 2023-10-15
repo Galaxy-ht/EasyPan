@@ -12,4 +12,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UserInfoQuery extends Query {
+
+    private String nickNameFuzzy;
+
+    private Integer status;
 }

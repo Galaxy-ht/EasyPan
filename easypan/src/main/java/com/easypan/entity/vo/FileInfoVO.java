@@ -23,6 +23,12 @@ public class FileInfoVO implements Serializable {
 //	@Schema(description = "文件Id")
 	private String fileId;
 
+//	@Schema(description = "用户Id")
+	private String userId;
+
+//	@Schema(description = "用户昵称")
+	private String nickName;
+
 //	@Schema(description = "父级Id")
 	private String filePid;
 

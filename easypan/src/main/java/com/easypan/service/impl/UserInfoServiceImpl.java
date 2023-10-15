@@ -59,7 +59,9 @@ public class UserInfoServiceImpl extends BaseServiceImpl<UserInfoDao, UserInfo> 
 
     private QueryWrapper<UserInfo> getWrapper(UserInfoQuery query) {
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
-
+        wrapper.like(StringUtils.isNotEmpty(query.getNickNameFuzzy()), "nick_name", query.getNickNameFuzzy());
+        wrapper.eq(query.getStatus() != null, "status", query.getStatus());
+        wrapper.orderByDesc("join_time");
         return wrapper;
     }
 

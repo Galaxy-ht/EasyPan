@@ -20,7 +20,7 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       "/api": {
-        target: "http://123.60.171.78:7090",
+        target: "http://localhost:7090",
         changeOrigin: true,
         pathRewrite: {
           "^api": "/api"

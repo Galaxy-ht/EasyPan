@@ -21,7 +21,8 @@ public class ProcessUtils {
         Runtime runtime = Runtime.getRuntime();
         Process process = null;
         try {
-            process = Runtime.getRuntime().exec(cmd);
+            // 使用 /bin/sh -c 执行命令，确保能找到系统PATH中的ffmpeg
+            process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
             // 执行ffmpeg指令
             // 取出输出流和错误流的信息
             // 注意：必须要取出ffmpeg在执行命令过程中产生的输出信息，如果不取的话当输出流信息填满jvm存储输出留信息的缓冲区时，线程就回阻塞住
@@ -30,10 +31,17 @@ public class ProcessUtils {
             errorStream.start();
             inputStream.start();
             // 等待ffmpeg命令执行完
-            process.waitFor();
+            int exitCode = process.waitFor();
+            // 等待流读取线程完成
+            errorStream.join();
+            inputStream.join();
             // 获取执行结果字符串
             String result = errorStream.stringBuffer.append(inputStream.stringBuffer + "\n").toString();
-            // 输出执行的命令信息
+
+            if (exitCode != 0) {
+                log.error("执行命令失败，exitCode:{}，命令:{}，结果:{}", exitCode, cmd, result);
+                throw new FastException("视频转换失败");
+            }
 
             if (outprintLog) {
                 log.info("执行命令:{}，已执行完毕,执行结果:{}", cmd, result);
@@ -41,9 +49,10 @@ public class ProcessUtils {
                 log.info("执行命令:{}，已执行完毕", cmd);
             }
             return result;
+        } catch (FastException e) {
+            throw e;
         } catch (Exception e) {
-            // logger.error("执行命令失败:{} ", e.getMessage());
-            e.printStackTrace();
+            log.error("执行命令失败:{} ", e.getMessage());
             throw new FastException("视频转换失败");
         } finally {
             if (null != process) {

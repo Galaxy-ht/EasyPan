@@ -159,6 +159,8 @@ public class BaseController {
             String fileName = fileInfo.getFilePath();
             fileName = StringUtils.getFileNameNoSuffix(fileName) + "/" + fileId;
             filePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER_FILE + fileName;
+            // 设置ts文件的Content-Type
+            response.setContentType("video/mp2t");
         } else {
             wrapper.eq("file_id", fileId);
             FileInfo fileInfo = fileInfoService.getOne(wrapper);
@@ -168,6 +170,8 @@ public class BaseController {
             if (FileCategoryEnums.VIDEO.getCategory().equals(fileInfo.getFileCategory())) {
                 String fileNameNoSuffix = StringUtils.getFileNameNoSuffix(fileInfo.getFilePath());
                 filePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER_FILE + fileNameNoSuffix + "/" + Constants.M3U8_NAME;
+                // 设置m3u8文件的Content-Type
+                response.setContentType("application/vnd.apple.mpegurl");
             } else {
                 filePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER_FILE + fileInfo.getFilePath();
             }

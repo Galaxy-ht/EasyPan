@@ -78,6 +78,10 @@ public class RedisComponent {
                 downloadFileDto, Constants.REDIS_KEY_EXPIRES_FIVE_MIN);
     }
 
+    public void saveSysSettingDto(SysSettingDto sysSettingDto) {
+        redisUtils.set(Constants.REDIS_KEY_SYS_SETTING, sysSettingDto);
+    }
+
     public DownloadFileDto getDownloadCode(String code) {
         return (DownloadFileDto) redisUtils.get(Constants.REDIS_KEY_DOWNLOAD + code);
     }

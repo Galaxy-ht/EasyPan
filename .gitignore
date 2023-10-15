@@ -2,3 +2,7 @@
 /easypan/target/
 /easypan-front/dist/
 /easypan-front/node_modules/
+/easypan/storage/
+/easypan/logs/
+/easypan/file/
+/easypan/src/main/resources/application.properties

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class AppConfig {
 
-    @Value("{admin.emails}")
+    @Value("${admin.emails}")
     public String adminEmails;
 
     @Value("${spring.mail.username}")

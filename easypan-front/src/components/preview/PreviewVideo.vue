@@ -47,10 +47,10 @@ onMounted(() => {
 #player {
   width: 100%;
   :deep .dplayer-video-wrap {
-    text-align: center;
     .dplayer-video {
-      margin: 0px auto;
-      max-height: calc(100vh - 41px);
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   }
 }
