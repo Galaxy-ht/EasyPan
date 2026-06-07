@@ -443,8 +443,6 @@ java -jar target/easypan-1.0.jar
 
 ## 🖼️ 功能预览
 
-> 请将实际截图放入 `docs/screenshots/` 目录下替换占位图片。
-
 ### 📂 文件管理
 
 <div align="center">

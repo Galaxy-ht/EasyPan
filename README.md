@@ -196,7 +196,72 @@ npm run dev
 | **回收站** | 软删除 + 恢复 + 彻底删除 |
 | **管理后台** | 用户管理 + 空间配额 + 系统设置 + 用户文件查看 |
 
-> 完整截图请查看子项目 README：[后端](easypan/README.md) | [前端](easypan-front/README.md)
+### 📂 文件管理
+
+<div align="center">
+  <img src="easypan-front/docs/screenshots/main.png" width="80%" alt="文件管理主页">
+  <p><em>文件管理主页 — 操作栏 + 面包屑导航 + 网格列表 + 行内操作</em></p>
+</div>
+
+### ⚡ 分片上传 & 秒传
+
+<div align="center">
+  <img src="easypan-front/docs/screenshots/upload.png" width="60%" alt="文件上传">
+  <p><em>大文件分片上传，SparkMD5 秒传，实时进度展示</em></p>
+</div>
+
+### 🎬 多格式在线预览
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><img src="easypan-front/docs/screenshots/video_preview.png" width="180"><br><em>视频 (HLS)</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/image_preview.png" width="180"><br><em>图片</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/pdf_preview.png" width="180"><br><em>PDF</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/docx_preview.png" width="180"><br><em>Word</em></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="easypan-front/docs/screenshots/excel_preview.png" width="180"><br><em>Excel</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/code_preview.png" width="180"><br><em>代码高亮</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/music_preview.png" width="180"><br><em>音乐播放</em></td>
+      <td align="center"></td>
+    </tr>
+  </table>
+  <p><em>支持视频、图片、PDF、Office 文档、代码、音乐等多种格式在线预览</em></p>
+</div>
+
+### 🔗 文件分享
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><img src="easypan-front/docs/screenshots/share_create.png" width="250"><br><em>创建分享</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/share_list.png" width="250"><br><em>我的分享</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/share_view.png" width="250"><br><em>公开分享页</em></td>
+    </tr>
+  </table>
+  <p><em>支持提取码、有效期设置，分享链接可公开访问和保存</em></p>
+</div>
+
+### 🗑️ 回收站
+
+<div align="center">
+  <img src="easypan-front/docs/screenshots/recycle.png" width="80%" alt="回收站">
+  <p><em>软删除机制，支持恢复和彻底删除</em></p>
+</div>
+
+### 👑 管理后台
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><img src="easypan-front/docs/screenshots/admin_users.png" width="250"><br><em>用户管理</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/admin_files.png" width="250"><br><em>系统设置</em></td>
+      <td align="center"><img src="easypan-front/docs/screenshots/admin_files.png" width="250"><br><em>用户文件</em></td>
+    </tr>
+  </table>
+  <p><em>管理员可管理用户、设置系统参数、查看用户文件</em></p>
+</div>
 
 ---
 
