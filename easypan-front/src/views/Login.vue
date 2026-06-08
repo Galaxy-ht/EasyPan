@@ -240,13 +240,15 @@ const showPanel = (type) => {
 
 onMounted(() => {
   showPanel(1);
-  // Demo: 预填管理员账号
-  formData.value = {
-    email: 'admin@test.com',
-    password: '123456',
-    checkCode: 'demo',
-    rememberMe: true,
-  };
+  // Demo: 预填管理员账号（nextTick 确保在 resetForm 之后执行）
+  nextTick(() => {
+    formData.value = {
+      email: "admin@test.com",
+      password: "123456",
+      checkCode: "demo",
+      rememberMe: true,
+    };
+  });
 });
 
 //验证码

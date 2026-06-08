@@ -186,12 +186,17 @@ public class BaseController {
 
     protected Result<List<FileInfoVO>> getFolderInfo(String path, String userId) {
         String[] pathArray = path.split("/");
-        String orderBy = "field(file_id,\"" + StringUtils.join(pathArray, "\",\"") + "\")";
+        // Use CASE WHEN for H2/MySQL cross-compatibility (H2 doesn't support FIELD())
+        StringBuilder orderBy = new StringBuilder("case file_id");
+        for (int i = 0; i < pathArray.length; i++) {
+            orderBy.append(" when '").append(pathArray[i]).append("' then ").append(i);
+        }
+        orderBy.append(" else ").append(pathArray.length).append(" end");
         FileInfoQuery query = new FileInfoQuery();
         query.setUserId(userId);
         query.setFolderType(FileFolderTypeEnums.FOLDER.getType());
         query.setFileIdArray(pathArray);
-        query.setOrderBy(orderBy);
+        query.setOrderBy(orderBy.toString());
         List<FileInfoVO> list = FileInfoConvert.INSTANCE.convertList(fileInfoService.list(query));
 
         return Result.ok(list);

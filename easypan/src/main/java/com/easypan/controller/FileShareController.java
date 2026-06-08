@@ -61,7 +61,11 @@ public class FileShareController extends BaseController {
         } else if (validType == 2) {
             expireTime = time + Constants.REDIS_KEY_EXPIRES_DAY * 30 * 1000L;
         }
-        share.setExpireTime(new Date(expireTime));
+        if (validType == 3) {
+            share.setExpireTime(null);
+        } else {
+            share.setExpireTime(new Date(expireTime));
+        }
         share.setFileId(fileId);
         share.setValidType(validType);
         share.setCode(code);

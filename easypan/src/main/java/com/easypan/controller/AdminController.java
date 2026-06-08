@@ -163,11 +163,15 @@ public class AdminController extends BaseController {
     @GlobalInterceptor(checkAdmin = true, checkParams = true)
     public Result<List<FileInfoVO>> getFolderInfo(@VerifyParam(required = true) String path) {
         String[] pathArray = path.split("/");
-        String orderBy = "field(file_id,\"" + StringUtils.join(pathArray, "\",\"") + "\")";
+        StringBuilder orderBy = new StringBuilder("case file_id");
+        for (int i = 0; i < pathArray.length; i++) {
+            orderBy.append(" when '").append(pathArray[i]).append("' then ").append(i);
+        }
+        orderBy.append(" else ").append(pathArray.length).append(" end");
         FileInfoQuery query = new FileInfoQuery();
         query.setFolderType(FileFolderTypeEnums.FOLDER.getType());
         query.setFileIdArray(pathArray);
-        query.setOrderBy(orderBy);
+        query.setOrderBy(orderBy.toString());
         List<FileInfoVO> list = FileInfoConvert.INSTANCE.convertList(fileInfoService.list(query));
         return Result.ok(list);
     }
