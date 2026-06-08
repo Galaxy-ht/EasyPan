@@ -1,0 +1,26 @@
+[Unit]
+Description=EasyPan Demo Cloud Storage
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/easypan
+ExecStart=/usr/bin/java -Xms256m -Xmx512m -Ddemo.mode=true -jar /opt/easypan/easypan-1.0.jar
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=easypan
+
+# 安全加固
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/easypan/data /opt/easypan/storage
+ReadOnlyPaths=/opt/easypan/easypan-1.0.jar
+
+[Install]
+WantedBy=multi-user.target

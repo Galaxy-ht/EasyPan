@@ -14,9 +14,10 @@ import com.easypan.service.UserInfoService;
 import com.easypan.utils.RedisComponent;
 import com.easypan.utils.Result;
 import com.easypan.utils.StringUtils;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,12 +38,15 @@ import java.io.IOException;
 @RestController
 @RequestMapping("userInfo")
 //@Tag(name="用户CRUD")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserInfoController extends BaseController {
 
     private final UserInfoService userInfoService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserInfoController.class);
+
+    @Value("${demo.mode:false}")
+    private boolean demoMode;
 
     @Resource
     private AppConfig appConfig;
@@ -100,7 +104,7 @@ public class UserInfoController extends BaseController {
                                            @VerifyParam(required = true) String password,
                                            @VerifyParam(required = true) String checkCode) {
         try {
-            if (!checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY))) {
+            if (!demoMode && !checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY))) {
                 throw new FastException("图片验证码不正确");
             }
             SessionWebUserDto sessionWebUserDto = userInfoService.login(email, password);

@@ -162,19 +162,65 @@ const tableOptions = {
   extHeight: 20,
 };
 const loadDataList = async () => {
-  let params = {
-    pageNo: tableData.value.pageNo,
-    pageSize: tableData.value.pageSize,
+  // Demo: 返回静态 mock 数据
+  tableData.value = {
+    pageNo: 1,
+    pageSize: 10,
+    totalCount: 5,
+    pageTotal: 1,
+    list: [
+      {
+        userId: '001',
+        nickName: 'Demo Admin',
+        email: 'admin@test.com',
+        useSpace: 1024 * 1024 * 25,
+        totalSpace: 1024 * 1024 * 50,
+        joinTime: '2024-01-15 10:30:00',
+        lastLoginTime: '2024-06-08 08:00:00',
+        status: 1,
+      },
+      {
+        userId: '002',
+        nickName: '测试用户A',
+        email: 'testa@example.com',
+        useSpace: 1024 * 1024 * 3,
+        totalSpace: 1024 * 1024 * 5,
+        joinTime: '2024-03-20 14:22:00',
+        lastLoginTime: '2024-06-07 16:45:00',
+        status: 1,
+      },
+      {
+        userId: '003',
+        nickName: '测试用户B',
+        email: 'testb@example.com',
+        useSpace: 1024 * 1024 * 1,
+        totalSpace: 1024 * 1024 * 5,
+        joinTime: '2024-05-01 09:15:00',
+        lastLoginTime: '2024-06-06 11:30:00',
+        status: 1,
+      },
+      {
+        userId: '004',
+        nickName: '已禁用用户',
+        email: 'disabled@example.com',
+        useSpace: 0,
+        totalSpace: 1024 * 1024 * 5,
+        joinTime: '2024-02-10 08:00:00',
+        lastLoginTime: '2024-04-01 20:00:00',
+        status: 0,
+      },
+      {
+        userId: '005',
+        nickName: '新注册用户',
+        email: 'newuser@example.com',
+        useSpace: 0,
+        totalSpace: 1024 * 1024 * 5,
+        joinTime: '2024-06-08 01:00:00',
+        lastLoginTime: '2024-06-08 01:05:00',
+        status: 1,
+      },
+    ],
   };
-  Object.assign(params, searchFormData.value);
-  let result = await proxy.Request({
-    url: api.loadDataList,
-    params,
-  });
-  if (!result) {
-    return;
-  }
-  tableData.value = result.data;
 };
 
 //修改状态
@@ -182,17 +228,7 @@ const updateUserStatus = (row) => {
   proxy.Confirm(
     `你确定要【${row.status == 0 ? "启动" : "禁用"}】吗？`,
     async () => {
-      let result = await proxy.Request({
-        url: api.updateUserStatus,
-        params: {
-          userId: row.userId,
-          status: row.status == 0 ? 1 : 0,
-        },
-      });
-      if (!result) {
-        return;
-      }
-      loadDataList();
+      proxy.Message.success('演示环境不支持此操作');
     }
   );
 };
@@ -231,18 +267,8 @@ const submitForm = () => {
     if (!valid) {
       return;
     }
-    let params = {};
-    Object.assign(params, formData.value);
-    let result = await proxy.Request({
-      url: api.updateUserSpace,
-      params: params,
-    });
-    if (!result) {
-      return;
-    }
     dialogConfig.value.show = false;
-    proxy.Message.success("操作成功");
-    loadDataList();
+    proxy.Message.success('演示环境不支持此操作');
   });
 };
 </script>

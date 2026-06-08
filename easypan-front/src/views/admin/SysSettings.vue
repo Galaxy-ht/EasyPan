@@ -71,30 +71,19 @@ const rules = {
 };
 
 const getSysSettings = async () => {
-  let result = await proxy.Request({
-    url: api.getSysSettings,
-  });
-  if (!result) {
-    return;
-  }
-  formData.value = result.data;
+  formData.value = {
+    registerEmailTitle: '演示环境不可用',
+    registerEmailContent: '演示环境不可用',
+    userInitUseSpace: 5,
+  };
 };
-getSysSettings();
 
 const saveSettings = async () => {
   formDataRef.value.validate(async (valid) => {
     if (!valid) {
       return;
     }
-    let params = Object.assign({}, formData.value);
-    let result = await proxy.Request({
-      url: api.saveSettings,
-      params: params,
-    });
-    if (!result) {
-      return;
-    }
-    proxy.Message.success("保存成功");
+    proxy.Message.success('演示环境不支持保存设置');
   });
 };
 </script>

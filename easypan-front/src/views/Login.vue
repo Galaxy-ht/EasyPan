@@ -118,7 +118,7 @@
           <div class="check-code-panel">
             <el-input
                 size="large"
-                placeholder="请输入验证码"
+                :placeholder="opType == 1 ? 'demo环境不进行校验' : '请输入验证码'"
                 v-model="formData.checkCode"
                 @keyup.enter="doSubmit"
             >
@@ -240,6 +240,13 @@ const showPanel = (type) => {
 
 onMounted(() => {
   showPanel(1);
+  // Demo: 预填管理员账号
+  formData.value = {
+    email: 'admin@test.com',
+    password: '123456',
+    checkCode: 'demo',
+    rememberMe: true,
+  };
 });
 
 //验证码

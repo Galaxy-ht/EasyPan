@@ -6,16 +6,15 @@
         </layout>
     </appender>
 
-    <springProperty scope="context" name="log.path" source="project.folder"/>
     <springProperty scope="context" name="log.root.level" source="log.root.level"/>
 
     <property name="LOG_FOLDER" value="logs"/>
     <property name="LOG_FILE_NAME" value="easypan.log"/>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/${LOG_FOLDER}/${LOG_FILE_NAME}</file>
+        <file>${LOG_FOLDER}/${LOG_FILE_NAME}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.path}/${LOG_FOLDER}/${LOG_FILE_NAME}.%d{yyyyMMdd}.%i</FileNamePattern>
+            <FileNamePattern>${LOG_FOLDER}/${LOG_FILE_NAME}.%d{yyyyMMdd}.%i</FileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <MaxFileSize>20MB</MaxFileSize>

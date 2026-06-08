@@ -51,6 +51,9 @@ public class ProcessUtils {
             return result;
         } catch (FastException e) {
             throw e;
+        } catch (IOException e) {
+            log.warn("FFmpeg 未安装或不可用，跳过命令: {}", cmd);
+            return null;
         } catch (Exception e) {
             log.error("执行命令失败:{} ", e.getMessage());
             throw new FastException("视频转换失败");

@@ -24,7 +24,7 @@ import com.easypan.service.UserInfoService;
 import com.easypan.utils.RedisComponent;
 import com.easypan.utils.Result;
 import com.easypan.utils.StringUtils;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,8 +43,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("admin")
-@AllArgsConstructor
 public class AdminController extends BaseController {
+
+    @Value("${demo.mode:false}")
+    private boolean demoMode;
 
     @Resource
     private UserInfoService userInfoService;
@@ -60,6 +63,9 @@ public class AdminController extends BaseController {
     @RequestMapping("loadUserList")
     @GlobalInterceptor(checkAdmin = true)
     public Result<PageResult<UserInfoVO>> loadUserList(HttpSession session, UserInfoQuery query) {
+        if (demoMode) {
+            return Result.ok(new PageResult<>(0L, 0, 0, 0, new ArrayList<>()));
+        }
         PageResult<UserInfoVO> page = userInfoService.page(query);
         return Result.ok(page);
     }
@@ -71,6 +77,9 @@ public class AdminController extends BaseController {
     @GlobalInterceptor(checkAdmin = true, checkParams = true)
     public Result<String> updateUserStatus(@VerifyParam(required = true) String userId,
                                            @VerifyParam(required = true) Integer status) {
+        if (demoMode) {
+            return Result.error("演示环境不支持此操作");
+        }
         UserInfo userInfo = userInfoService.getById(userId);
         if (userInfo == null) {
             return Result.error("用户不存在");
@@ -87,6 +96,9 @@ public class AdminController extends BaseController {
     @GlobalInterceptor(checkAdmin = true, checkParams = true)
     public Result<String> updateUserSpace(@VerifyParam(required = true) String userId,
                                           @VerifyParam(required = true) String changeSpace) {
+        if (demoMode) {
+            return Result.error("演示环境不支持此操作");
+        }
         UserInfo userInfo = userInfoService.getById(userId);
         if (userInfo == null) {
             return Result.error("用户不存在");
@@ -94,7 +106,6 @@ public class AdminController extends BaseController {
         Long newTotalSpace = Long.parseLong(changeSpace) * Constants.MB;
         userInfo.setTotalSpace(newTotalSpace);
         userInfoService.updateById(userInfo);
-        // 更新Redis缓存
         redisComponent.saveUserUseSpace(userId, redisComponent.getUserUseSpace(userId));
         return Result.ok();
     }
@@ -111,7 +122,6 @@ public class AdminController extends BaseController {
             query.setFileNameFuzzy(query.getFileNameFuzzy());
         }
         PageResult<FileInfoVO> page = fileInfoService.page(query);
-        // 补充nickName信息
         if (page.getList() != null) {
             for (FileInfoVO vo : page.getList()) {
                 if (StringUtils.isNotEmpty(vo.getUserId())) {
@@ -131,6 +141,9 @@ public class AdminController extends BaseController {
     @RequestMapping("delFile")
     @GlobalInterceptor(checkAdmin = true, checkParams = true)
     public Result<String> delFile(@VerifyParam(required = true) String fileIdAndUserIds) {
+        if (demoMode) {
+            return Result.error("演示环境不支持此操作");
+        }
         String[] idArray = fileIdAndUserIds.split(",");
         for (String idPair : idArray) {
             String[] parts = idPair.split("_");
@@ -149,7 +162,6 @@ public class AdminController extends BaseController {
     @RequestMapping("getFolderInfo")
     @GlobalInterceptor(checkAdmin = true, checkParams = true)
     public Result<List<FileInfoVO>> getFolderInfo(@VerifyParam(required = true) String path) {
-        // 管理员查看文件目录，不需要限制userId
         String[] pathArray = path.split("/");
         String orderBy = "field(file_id,\"" + StringUtils.join(pathArray, "\",\"") + "\")";
         FileInfoQuery query = new FileInfoQuery();
@@ -219,6 +231,9 @@ public class AdminController extends BaseController {
     @RequestMapping("saveSysSettings")
     @GlobalInterceptor(checkAdmin = true, checkParams = true)
     public Result<String> saveSysSettings(SysSettingDto sysSettingDto) {
+        if (demoMode) {
+            return Result.error("演示环境不支持此操作");
+        }
         redisComponent.saveSysSettingDto(sysSettingDto);
         return Result.ok();
     }
