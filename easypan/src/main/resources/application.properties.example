@@ -53,6 +53,9 @@ log.root.level=info
 # 管理员邮箱（逗号分隔）
 admin.emails=admin@test.com
 
+# storage_bak 备份路径（每次初始化时从此路径覆盖 storage）
+mirror.storage.bak.path=./storage_bak
+
 # Demo 模式配置
 demo.mode=true
 demo.admin.email=admin@test.com

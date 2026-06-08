@@ -85,23 +85,30 @@ fi
 log "创建目录结构..."
 sudo mkdir -p "${DEPLOY_DIR}" "${STORAGE_DIR}" "${DATA_DIR}" "${FRONTEND_DIR}"
 
-# ── 6. 部署后端 ────────────────────────────────────────
+# ── 6. 部署 storage_bak ──────────────────────────────────
+log "部署 storage_bak（文件数据备份）..."
+STORAGE_BAK_DIR="${DEPLOY_DIR}/storage_bak"
+sudo rm -rf "${STORAGE_BAK_DIR:?}"
+sudo cp -r "${SCRIPT_DIR}/easypan/storage_bak" "${STORAGE_BAK_DIR}"
+log "storage_bak 部署完成"
+
+# ── 7. 部署后端 ────────────────────────────────────────
 log "部署后端..."
 sudo cp "${SCRIPT_DIR}/easypan/target/${JAR_NAME}" "${DEPLOY_DIR}/"
 sudo chmod 644 "${DEPLOY_DIR}/${JAR_NAME}"
 
-# ── 7. 部署前端 ────────────────────────────────────────
+# ── 8. 部署前端 ────────────────────────────────────────
 log "部署前端..."
 sudo rm -rf "${FRONTEND_DIR:?}/*"
 sudo cp -r "${SCRIPT_DIR}/easypan-front/dist/"* "${FRONTEND_DIR}/"
 
-# ── 8. 配置 systemd ────────────────────────────────────
+# ── 9. 配置 systemd ────────────────────────────────────
 log "配置 systemd 服务..."
 sudo cp "${SCRIPT_DIR}/easypan.service" "${SYSTEMD_SERVICE}"
 sudo systemctl daemon-reload
 sudo systemctl enable "${APP_NAME}"
 
-# ── 9. 配置 nginx ──────────────────────────────────────
+# ── 10. 配置 nginx ──────────────────────────────────────
 log "配置 nginx..."
 sudo cp "${SCRIPT_DIR}/nginx-easypan.conf" "${NGINX_CONF}"
 if [ ! -L "/etc/nginx/sites-enabled/${APP_NAME}" ]; then
@@ -120,11 +127,11 @@ fi
 sudo systemctl reload nginx
 log "nginx 配置完成"
 
-# ── 10. 设置权限 ───────────────────────────────────────
+# ── 11. 设置权限 ───────────────────────────────────────
 log "设置文件权限..."
 sudo chown -R www-data:www-data "${DEPLOY_DIR}" "${STORAGE_DIR}" "${DATA_DIR}" "${FRONTEND_DIR}"
 
-# ── 11. 启动服务 ───────────────────────────────────────
+# ── 12. 启动服务 ───────────────────────────────────────
 log "启动 ${APP_NAME} 服务..."
 sudo systemctl start "${APP_NAME}"
 
@@ -136,7 +143,7 @@ else
     err "服务启动失败，请检查日志: sudo journalctl -u ${APP_NAME} -f"
 fi
 
-# ── 12. 配置 SSL 证书 ──────────────────────────────────
+# ── 13. 配置 SSL 证书 ──────────────────────────────────
 log "检查 SSL 证书..."
 if [ ! -f "/etc/letsencrypt/live/pan.egon.chat/fullchain.pem" ]; then
     warn "未找到 SSL 证书，请手动执行:"

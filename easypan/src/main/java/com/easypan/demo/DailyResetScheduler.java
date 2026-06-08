@@ -30,6 +30,9 @@ public class DailyResetScheduler {
     @Value("${project.folder}")
     private String projectFolder;
 
+    @Value("${mirror.storage.bak.path:./storage_bak}")
+    private String storageBakPath;
+
     @Resource
     private UserInfoDao userInfoDao;
 
@@ -54,19 +57,18 @@ public class DailyResetScheduler {
         logger.info("=== Daily Demo Reset Starting ===");
 
         try {
-            // Clear all database data
-            // Clear all database data
+            // 清空所有业务数据表
             fileInfoDao.delete(null);
             fileShareDao.delete(null);
             userInfoDao.delete(null);
             emailCodeDao.delete(null);
             logger.info("Cleared all database data");
 
-            // Clear storage files
+            // 清空存储目录
             clearStorageDirectory();
             logger.info("Cleared all storage files");
 
-            // Re-seed demo data
+            // 从 storage_bak 恢复文件
             demoDataSeeder.run();
             logger.info("=== Daily Demo Reset Complete ===");
         } catch (Exception e) {
@@ -76,7 +78,14 @@ public class DailyResetScheduler {
 
     private void clearStorageDirectory() {
         String storagePath = projectFolder + Constants.FILE_FOLDER_FILE;
-        Path dir = Paths.get(storagePath);
+        deleteDirectoryContents(storagePath);
+
+        String tempPath = projectFolder + Constants.FILE_FOLDER_TEMP;
+        deleteDirectoryContents(tempPath);
+    }
+
+    private void deleteDirectoryContents(String dirPath) {
+        Path dir = Paths.get(dirPath);
         if (Files.exists(dir)) {
             try {
                 Files.walk(dir)
@@ -84,20 +93,7 @@ public class DailyResetScheduler {
                         .map(Path::toFile)
                         .forEach(File::delete);
             } catch (IOException e) {
-                logger.error("Failed to clear storage directory", e);
-            }
-        }
-
-        String tempPath = projectFolder + Constants.FILE_FOLDER_TEMP;
-        Path tempDir = Paths.get(tempPath);
-        if (Files.exists(tempDir)) {
-            try {
-                Files.walk(tempDir)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-            } catch (IOException e) {
-                logger.error("Failed to clear temp directory", e);
+                logger.error("Failed to clear directory: {}", dirPath, e);
             }
         }
     }
