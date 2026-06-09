@@ -1,5 +1,6 @@
 package com.easypan.demo;
 
+import com.easypan.config.AppConfig;
 import com.easypan.entity.constants.Constants;
 import com.easypan.entity.enums.*;
 import com.easypan.entity.po.FileInfo;
@@ -37,14 +38,11 @@ public class DemoDataSeeder implements CommandLineRunner {
     @Value("${demo.mode:false}")
     private boolean demoMode;
 
-    @Value("${project.folder}")
-    private String projectFolder;
+    @Resource
+    private AppConfig appConfig;
 
     @Value("${admin.emails}")
     private String adminEmails;
-
-    @Value("${mirror.storage.bak.path:./storage_bak}")
-    private String storageBakPath;
 
     @Resource
     private UserInfoDao userInfoDao;
@@ -89,10 +87,10 @@ public class DemoDataSeeder implements CommandLineRunner {
      * 清空 demo 存储目录，为从 storage_bak 覆盖做准备
      */
     private void clearStorageDirectory() {
-        String storagePath = projectFolder + Constants.FILE_FOLDER_FILE;
+        String storagePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER_FILE;
         deleteDirectoryContents(storagePath);
 
-        String tempPath = projectFolder + Constants.FILE_FOLDER_TEMP;
+        String tempPath = appConfig.getProjectFolder() + Constants.FILE_FOLDER_TEMP;
         deleteDirectoryContents(tempPath);
 
         logger.info("Cleared storage directory");
@@ -116,11 +114,11 @@ public class DemoDataSeeder implements CommandLineRunner {
      * 将 storage_bak 中的所有内容复制到 demo 存储目录
      */
     private void copyStorageFromBak() {
-        Path sourcePath = Paths.get(storageBakPath);
-        Path targetPath = Paths.get(projectFolder);
+        Path sourcePath = Paths.get(appConfig.getStorageBakPath());
+        Path targetPath = Paths.get(appConfig.getProjectFolder());
 
         if (!Files.exists(sourcePath)) {
-            logger.warn("storage_bak not found at: {}, skipping file copy", storageBakPath);
+            logger.warn("storage_bak not found at: {}, skipping file copy", appConfig.getStorageBakPath());
             return;
         }
 
@@ -144,7 +142,7 @@ public class DemoDataSeeder implements CommandLineRunner {
                     return FileVisitResult.CONTINUE;
                 }
             });
-            logger.info("Copied storage_bak from {} to {}", storageBakPath, projectFolder);
+            logger.info("Copied storage_bak from {} to {}", appConfig.getStorageBakPath(), appConfig.getProjectFolder());
         } catch (IOException e) {
             logger.error("Failed to copy storage_bak", e);
         }

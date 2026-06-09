@@ -1,5 +1,6 @@
 package com.easypan.demo;
 
+import com.easypan.config.AppConfig;
 import com.easypan.entity.constants.Constants;
 import com.easypan.mappers.EmailCodeDao;
 import com.easypan.mappers.FileInfoDao;
@@ -27,11 +28,8 @@ public class DailyResetScheduler {
     @Value("${demo.mode:false}")
     private boolean demoMode;
 
-    @Value("${project.folder}")
-    private String projectFolder;
-
-    @Value("${mirror.storage.bak.path:./storage_bak}")
-    private String storageBakPath;
+    @Resource
+    private AppConfig appConfig;
 
     @Resource
     private UserInfoDao userInfoDao;
@@ -77,10 +75,10 @@ public class DailyResetScheduler {
     }
 
     private void clearStorageDirectory() {
-        String storagePath = projectFolder + Constants.FILE_FOLDER_FILE;
+        String storagePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER_FILE;
         deleteDirectoryContents(storagePath);
 
-        String tempPath = projectFolder + Constants.FILE_FOLDER_TEMP;
+        String tempPath = appConfig.getProjectFolder() + Constants.FILE_FOLDER_TEMP;
         deleteDirectoryContents(tempPath);
     }
 
