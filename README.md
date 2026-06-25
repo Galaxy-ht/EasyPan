@@ -64,7 +64,7 @@ EasyPan 是一个**前后端分离的轻量级私有云盘系统**，提供完�
 ## 📁 项目结构
 
 ```
-SmallPan/
+EasyPan/
 ├── easypan/                    # 后端 Spring Boot 项目
 │   ├── README.md               # 后端详细文档
 │   ├── pom.xml
